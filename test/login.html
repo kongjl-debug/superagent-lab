@@ -10,38 +10,92 @@
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236366f1'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='38' font-weight='700' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E"
   >
   <style>
+    @property --holo-angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+
     :root {
-      --bg-start: #eef2ff;
-      --bg-end: #f8fafc;
-      --card-bg: #ffffff;
+      --bg-base: #f6f7ff;
+      --bg-tint: #eef2ff;
       --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #cbd5e1;
-      --field-bg: #f8fafc;
+      --text-muted: #5a6377;
+      --surface: rgba(255, 255, 255, 0.68);
+      --surface-strong: rgba(255, 255, 255, 0.9);
+      --card-gradient: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.94) 0%,
+        rgba(255, 255, 255, 0.72) 46%,
+        rgba(238, 242, 255, 0.8) 100%
+      );
+      --card-border: rgba(255, 255, 255, 0.7);
+      --field-bg: rgba(255, 255, 255, 0.62);
+      --field-border: rgba(100, 116, 139, 0.28);
+      --field-hover: rgba(79, 70, 229, 0.45);
+      --divider: rgba(100, 116, 139, 0.18);
       --primary: #4f46e5;
-      --primary-hover: #4338ca;
+      --primary-strong: #4338ca;
+      --primary-soft: #818cf8;
+      --accent: #06b6d4;
+      --pink: #ec4899;
+      --btn-1: #4f46e5;
+      --btn-2: #7c3aed;
+      --btn-3: #0891b2;
       --danger: #dc2626;
       --success: #15803d;
-      --ring: rgba(79, 70, 229, 0.28);
-      --shadow: 0 24px 60px -20px rgba(15, 23, 42, 0.25);
+      --ring: rgba(79, 70, 229, 0.3);
+      --shadow: 0 60px 120px -40px rgba(49, 46, 129, 0.5), 0 28px 60px -32px rgba(49, 46, 129, 0.32),
+        0 0 60px -24px rgba(99, 102, 241, 0.45);
+      --glow: rgba(99, 102, 241, 0.45);
+      --shine: rgba(129, 140, 248, 0.32);
+      --holo-opacity: 0.55;
+      --grid: rgba(99, 102, 241, 0.2);
+      --holo-angle: 0deg;
+      --shape-opacity: 0.85;
+      --orb-ring: rgba(99, 102, 241, 0.6);
+      --orb-core: #6366f1;
       color-scheme: light;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-start: #111827;
-        --bg-end: #020617;
-        --card-bg: #0f172a;
-        --text: #f1f5f9;
-        --text-muted: #94a3b8;
-        --border: #334155;
-        --field-bg: #1e293b;
+        --bg-base: #070a18;
+        --bg-tint: #0b1026;
+        --text: #eef2ff;
+        --text-muted: #a3b0c9;
+        --surface: rgba(15, 21, 45, 0.66);
+        --surface-strong: rgba(21, 28, 58, 0.9);
+        --card-gradient: linear-gradient(
+          155deg,
+          rgba(27, 34, 68, 0.92) 0%,
+          rgba(14, 20, 44, 0.82) 48%,
+          rgba(24, 17, 50, 0.86) 100%
+        );
+        --card-border: rgba(129, 140, 248, 0.3);
+        --field-bg: rgba(8, 12, 30, 0.55);
+        --field-border: rgba(148, 163, 184, 0.24);
+        --field-hover: rgba(129, 140, 248, 0.6);
+        --divider: rgba(148, 163, 184, 0.16);
         --primary: #818cf8;
-        --primary-hover: #a5b4fc;
+        --primary-strong: #6d76f2;
+        --primary-soft: #a5b4fc;
+        --accent: #22d3ee;
+        --pink: #f472b6;
         --danger: #f87171;
         --success: #4ade80;
-        --ring: rgba(129, 140, 248, 0.35);
-        --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+        --ring: rgba(129, 140, 248, 0.38);
+        --shadow: 0 60px 130px -40px rgba(0, 0, 0, 0.95), 0 0 100px -30px rgba(99, 102, 241, 0.6);
+        --glow: rgba(99, 102, 241, 0.6);
+        --shine: rgba(165, 180, 252, 0.22);
+        --holo-opacity: 0.82;
+        --btn-1: #4f46e5;
+        --btn-2: #7c3aed;
+        --btn-3: #0e7490;
+        --grid: rgba(129, 140, 248, 0.16);
+        --shape-opacity: 0.92;
+        --orb-ring: rgba(129, 140, 248, 0.7);
+        --orb-core: #818cf8;
         color-scheme: dark;
       }
     }
@@ -52,7 +106,7 @@
 
     html,
     body {
-      height: 100%;
+      min-height: 100%;
       margin: 0;
     }
 
@@ -60,39 +114,284 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 40px 24px;
+      overflow-x: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
         "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at 15% 10%, var(--bg-start), var(--bg-end) 60%);
+      background: var(--bg-base);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
 
+    /* ---------- 3D background scene ---------- */
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      perspective: 1100px;
+      background:
+        radial-gradient(120% 90% at 50% -10%, var(--bg-tint), transparent 60%),
+        linear-gradient(160deg, var(--bg-base), var(--bg-tint) 55%, var(--bg-base));
+    }
+
+    .grid-floor {
+      position: absolute;
+      right: -40%;
+      bottom: -22%;
+      left: -40%;
+      height: 62%;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 58px 58px;
+      transform: perspective(520px) rotateX(74deg);
+      transform-origin: 50% 100%;
+      opacity: 0.75;
+      -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 72%);
+      mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 72%);
+    }
+
+    .aurora {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.6;
+      will-change: translate, scale;
+      transform: translate3d(calc(var(--px, 0px) * var(--k, 1)), calc(var(--py, 0px) * var(--k, 1)), 0);
+    }
+
+    .aurora--indigo {
+      --k: 1.4;
+      top: -16vw;
+      left: -12vw;
+      width: 54vw;
+      height: 54vw;
+      min-width: 460px;
+      min-height: 460px;
+      background: radial-gradient(circle at 35% 35%, rgba(99, 102, 241, 0.9), rgba(99, 102, 241, 0) 64%);
+      animation: aurora-drift-a 17s ease-in-out infinite alternate;
+    }
+
+    .aurora--cyan {
+      --k: 2;
+      top: 4vh;
+      right: -14vw;
+      width: 46vw;
+      height: 46vw;
+      min-width: 400px;
+      min-height: 400px;
+      background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.62), rgba(6, 182, 212, 0) 64%);
+      animation: aurora-drift-b 21s ease-in-out infinite alternate;
+    }
+
+    .aurora--pink {
+      --k: 1.1;
+      bottom: -18vw;
+      left: 18vw;
+      width: 50vw;
+      height: 50vw;
+      min-width: 420px;
+      min-height: 420px;
+      background: radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.5), rgba(236, 72, 153, 0) 64%);
+      animation: aurora-drift-c 19s ease-in-out infinite alternate;
+    }
+
+    .shape-anchor {
+      position: absolute;
+      transform: translate3d(calc(var(--px, 0px) * var(--k, 1)), calc(var(--py, 0px) * var(--k, 1)), 0);
+      opacity: var(--shape-opacity);
+    }
+
+    .float {
+      animation: shape-float 8s ease-in-out infinite alternate;
+    }
+
+    .shape-anchor--ring {
+      --k: 1.9;
+      top: 15%;
+      left: 7%;
+      animation-delay: -2s;
+    }
+
+    .shape-anchor--cube {
+      --k: 2.4;
+      top: 18%;
+      right: 9%;
+    }
+
+    .shape-anchor--sphere {
+      --k: 1.6;
+      right: 14%;
+      bottom: 12%;
+    }
+
+    .shape-anchor--coin {
+      --k: 2.8;
+      bottom: 16%;
+      left: 13%;
+      opacity: 0.55;
+    }
+
+    /* Torus-like holographic ring */
+    .ring {
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 210deg,
+        rgba(99, 102, 241, 0.95),
+        rgba(6, 182, 212, 0.4) 30%,
+        rgba(236, 72, 153, 0.9) 58%,
+        rgba(129, 140, 248, 0.25) 78%,
+        rgba(99, 102, 241, 0.95)
+      );
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 13px), #000 calc(100% - 12px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 13px), #000 calc(100% - 12px));
+      transform: rotateX(62deg) rotateZ(18deg);
+      filter: drop-shadow(0 18px 28px rgba(79, 70, 229, 0.35));
+      animation: ring-spin 24s linear infinite;
+    }
+
+    .ring--small {
+      width: 62px;
+      height: 62px;
+      border-width: 8px;
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px));
+      transform: rotateX(58deg) rotateZ(-24deg);
+      animation-duration: 16s;
+      animation-direction: reverse;
+    }
+
+    /* Holographic cube */
+    .cube-stage {
+      width: 62px;
+      height: 62px;
+      perspective: 700px;
+    }
+
+    .cube {
+      position: relative;
+      width: 62px;
+      height: 62px;
+      transform-style: preserve-3d;
+      animation: cube-spin 22s linear infinite;
+    }
+
+    .cube__face {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.85), rgba(6, 182, 212, 0.5));
+      box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.22);
+      backface-visibility: visible;
+    }
+
+    .cube__face--front {
+      transform: translateZ(31px);
+    }
+
+    .cube__face--back {
+      transform: rotateY(180deg) translateZ(31px);
+    }
+
+    .cube__face--right {
+      transform: rotateY(90deg) translateZ(31px);
+    }
+
+    .cube__face--left {
+      transform: rotateY(-90deg) translateZ(31px);
+    }
+
+    .cube__face--top {
+      transform: rotateX(90deg) translateZ(31px);
+    }
+
+    .cube__face--bottom {
+      transform: rotateX(-90deg) translateZ(31px);
+    }
+
+    /* Glowing orb */
+    .orb {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 4%, rgba(165, 180, 252, 0.95) 16%, var(--orb-core) 48%, rgba(30, 27, 75, 0.95) 82%);
+      box-shadow:
+        inset -14px -16px 30px rgba(0, 0, 0, 0.4),
+        0 0 55px 6px var(--glow);
+      animation: orb-pulse 6s ease-in-out infinite alternate;
+    }
+
+    .orb::after {
+      content: "";
+      position: absolute;
+      inset: 12% 48% 58% 18%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.55);
+      filter: blur(4px);
+    }
+
+    .shape-anchor--sphere .float {
+      position: relative;
+    }
+
+    /* ---------- Page layout ---------- */
+
     .login-shell {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
+      animation: page-in 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
       justify-content: center;
+      gap: 14px;
+      margin-bottom: 26px;
+      perspective: 600px;
     }
 
     .brand-mark {
+      position: relative;
       display: grid;
       place-items: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 13px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #06b6d4 130%);
+      box-shadow:
+        0 14px 30px -10px rgba(79, 70, 229, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -10px 20px rgba(49, 46, 129, 0.35);
       color: #ffffff;
-      font-size: 22px;
+      font-size: 23px;
       font-weight: 700;
-      box-shadow: 0 10px 24px -8px rgba(79, 70, 229, 0.55);
+      line-height: 1;
       user-select: none;
+      transform-style: preserve-3d;
+      transform: rotateX(var(--brand-tilt-x, 0deg)) rotateY(var(--brand-tilt-y, 0deg));
+      transition: transform 0.25s ease;
+      animation: brand-float 7s ease-in-out infinite alternate;
+    }
+
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 1px 1px 55%;
+      border-radius: 13px 13px 40% 40%;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
+      pointer-events: none;
     }
 
     .brand-name {
@@ -101,18 +400,92 @@
       letter-spacing: 0.01em;
     }
 
+    .card-float {
+      position: relative;
+      animation: card-hover 9s ease-in-out infinite alternate;
+    }
+
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+      position: relative;
+      padding: 34px 32px 30px;
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      background: var(--card-gradient);
       box-shadow: var(--shadow);
-      padding: 32px;
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      backdrop-filter: blur(22px) saturate(160%);
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+      transition: box-shadow 0.35s ease;
+      will-change: transform;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      z-index: 0;
+      padding: 1.5px;
+      border-radius: inherit;
+      background: conic-gradient(from 0deg, #6366f1, #06b6d4 25%, #ec4899 50%, #a78bfa 75%, #6366f1);
+      background: conic-gradient(
+        from var(--holo-angle),
+        #6366f1,
+        #06b6d4 25%,
+        #ec4899 50%,
+        #a78bfa 75%,
+        #6366f1
+      );
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      opacity: var(--holo-opacity);
+      pointer-events: none;
+      filter: drop-shadow(0 0 7px rgba(99, 102, 241, 0.45));
+      animation: holo-spin 9s linear infinite;
+    }
+
+    .card.is-hovered {
+      box-shadow:
+        0 72px 140px -40px rgba(49, 46, 129, 0.55),
+        0 32px 64px -30px rgba(49, 46, 129, 0.4),
+        0 0 80px -16px var(--glow);
+    }
+
+    @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+      .card::before {
+        display: none;
+      }
+    }
+
+    .card-shine {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: inherit;
+      background: radial-gradient(
+        400px circle at var(--shine-x, 50%) var(--shine-y, 0%),
+        var(--shine),
+        transparent 62%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .card.is-hovered .card-shine {
+      opacity: 1;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
     }
 
     .card h1 {
       margin: 0 0 6px;
-      font-size: 26px;
-      line-height: 1.25;
+      font-size: 27px;
+      line-height: 1.2;
       letter-spacing: -0.02em;
     }
 
@@ -123,6 +496,8 @@
       line-height: 1.6;
     }
 
+    /* ---------- Form ---------- */
+
     .field {
       margin-bottom: 18px;
     }
@@ -130,8 +505,9 @@
     .field label {
       display: block;
       margin-bottom: 8px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
+      letter-spacing: 0.01em;
     }
 
     .input-wrap {
@@ -140,27 +516,54 @@
       align-items: center;
     }
 
+    .field-icon {
+      position: absolute;
+      left: 15px;
+      display: grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
+
+    .field-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .input-wrap:focus-within .field-icon {
+      color: var(--primary);
+    }
+
     .input-wrap input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 13px 15px 13px 44px;
       font: inherit;
       font-size: 15px;
       color: var(--text);
       background: var(--field-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border: 1px solid var(--field-border);
+      border-radius: 13px;
       outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      transition: border-color 0.2s ease, box-shadow 0.25s ease, background 0.2s ease;
     }
 
     .input-wrap input::placeholder {
       color: var(--text-muted);
-      opacity: 0.8;
+      opacity: 0.72;
+    }
+
+    .input-wrap:hover input {
+      border-color: var(--field-hover);
     }
 
     .input-wrap input:focus {
+      background: var(--surface-strong);
       border-color: var(--primary);
-      box-shadow: 0 0 0 4px var(--ring);
+      box-shadow: 0 0 0 4px var(--ring), 0 14px 30px -20px var(--glow);
     }
 
     .input-wrap.has-toggle input {
@@ -170,21 +573,23 @@
     .toggle-password {
       position: absolute;
       right: 8px;
-      padding: 6px 10px;
+      padding: 7px 11px;
       font: inherit;
       font-size: 13px;
       font-weight: 600;
       color: var(--primary);
       background: transparent;
       border: 0;
-      border-radius: 8px;
+      border-radius: 9px;
       cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
     }
 
     .toggle-password:hover,
     .toggle-password:focus-visible {
       background: var(--ring);
       outline: none;
+      transform: translateY(-1px);
     }
 
     .error-message {
@@ -196,6 +601,11 @@
 
     .field.invalid input {
       border-color: var(--danger);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.14);
+    }
+
+    .field.invalid .field-icon {
+      color: var(--danger);
     }
 
     .field.invalid .error-message {
@@ -240,34 +650,76 @@
     }
 
     .submit {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       width: 100%;
-      padding: 13px 16px;
+      padding: 14px 18px;
+      overflow: hidden;
       font: inherit;
       font-size: 15px;
       font-weight: 700;
+      letter-spacing: 0.02em;
       color: #ffffff;
-      background: linear-gradient(135deg, #6366f1, #7c3aed);
+      background: linear-gradient(120deg, var(--btn-1) 0%, var(--btn-2) 55%, var(--btn-3) 125%);
       border: 0;
-      border-radius: 12px;
+      border-radius: 13px;
       cursor: pointer;
-      transition: transform 0.12s ease, filter 0.15s ease;
+      box-shadow:
+        0 16px 32px -14px rgba(79, 70, 229, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -2px 0 rgba(30, 27, 75, 0.25);
+      transform: translate3d(var(--btn-x, 0px), var(--btn-y, 0px), 0);
+      transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, filter 0.25s ease;
+    }
+
+    .submit::before {
+      content: "";
+      position: absolute;
+      inset: -50% -70%;
+      background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.5) 50%, transparent 58%);
+      transform: translateX(-70%);
+      transition: transform 0.75s ease;
+      pointer-events: none;
+    }
+
+    .submit::after {
+      content: "→";
+      font-size: 16px;
+      line-height: 1;
+      opacity: 0.9;
+      transition: transform 0.2s ease;
+    }
+
+    .submit:hover::after {
+      transform: translateX(3px);
     }
 
     .submit:hover {
-      filter: brightness(1.06);
+      transform: translate3d(var(--btn-x, 0px), calc(var(--btn-y, 0px) - 2px), 0);
+      filter: saturate(1.12) brightness(1.04);
+      box-shadow:
+        0 22px 40px -14px rgba(79, 70, 229, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -2px 0 rgba(30, 27, 75, 0.25);
+    }
+
+    .submit:hover::before {
+      transform: translateX(70%);
     }
 
     .submit:active {
-      transform: translateY(1px);
+      transform: translate3d(var(--btn-x, 0px), calc(var(--btn-y, 0px) + 1px), 0);
+      box-shadow:
+        0 10px 22px -12px rgba(79, 70, 229, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .submit:focus-visible {
       outline: 3px solid var(--ring);
-      outline-offset: 2px;
+      outline-offset: 3px;
     }
 
     .submit[disabled] {
@@ -296,7 +748,7 @@
     .card-footer {
       margin: 22px 0 0;
       padding-top: 18px;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--divider);
       font-size: 13px;
       line-height: 1.6;
       text-align: center;
@@ -304,33 +756,198 @@
     }
 
     .page-footer {
-      margin-top: 20px;
+      margin-top: 22px;
       font-size: 12px;
+      line-height: 1.6;
       text-align: center;
       color: var(--text-muted);
+    }
+
+    .page-footer .hint {
+      display: inline-block;
+      margin-left: 4px;
+      white-space: nowrap;
     }
 
     .noscript-message {
       text-align: center;
     }
 
-    @media (max-width: 480px) {
+    /* ---------- Animations ---------- */
+
+    @keyframes aurora-drift-a {
+      0% {
+        translate: 0 0;
+        scale: 1;
+      }
+
+      100% {
+        translate: 7vw 4vh;
+        scale: 1.18;
+      }
+    }
+
+    @keyframes aurora-drift-b {
+      0% {
+        translate: 0 0;
+        scale: 1.05;
+      }
+
+      100% {
+        translate: -6vw 6vh;
+        scale: 0.92;
+      }
+    }
+
+    @keyframes aurora-drift-c {
+      0% {
+        translate: 0 0;
+        scale: 0.95;
+      }
+
+      100% {
+        translate: 5vw -5vh;
+        scale: 1.16;
+      }
+    }
+
+    @keyframes shape-float {
+      0% {
+        translate: 0 0;
+      }
+
+      100% {
+        translate: 0 -18px;
+      }
+    }
+
+    @keyframes ring-spin {
+      to {
+        transform: rotateX(62deg) rotateZ(378deg);
+      }
+    }
+
+    @keyframes cube-spin {
+      0% {
+        transform: rotateX(-18deg) rotateY(0deg);
+      }
+
+      100% {
+        transform: rotateX(342deg) rotateY(360deg);
+      }
+    }
+
+    @keyframes orb-pulse {
+      0% {
+        scale: 0.96;
+      }
+
+      100% {
+        scale: 1.06;
+      }
+    }
+
+    @keyframes holo-spin {
+      to {
+        --holo-angle: 360deg;
+      }
+    }
+
+    @keyframes card-hover {
+      0% {
+        translate: 0 5px;
+      }
+
+      100% {
+        translate: 0 -6px;
+      }
+    }
+
+    @keyframes page-in {
+      from {
+        opacity: 0;
+        translate: 0 18px;
+      }
+
+      to {
+        opacity: 1;
+        translate: 0 0;
+      }
+    }
+
+    @keyframes brand-float {
+      0% {
+        translate: 0 2px;
+        rotate: -2deg;
+      }
+
+      100% {
+        translate: 0 -4px;
+        rotate: 2deg;
+      }
+    }
+
+    /* ---------- Responsive ---------- */
+
+    @media (max-width: 720px) {
       body {
-        padding: 16px;
         align-items: flex-start;
+        padding: 26px 16px;
       }
 
       .login-shell {
-        padding-top: 24px;
+        padding-top: 18px;
+      }
+
+      .brand {
+        margin-bottom: 22px;
       }
 
       .card {
-        padding: 24px 20px;
-        border-radius: 16px;
+        padding: 26px 22px 24px;
+        border-radius: 20px;
       }
 
       .card h1 {
         font-size: 23px;
+      }
+
+      .shape-anchor--ring,
+      .shape-anchor--coin,
+      .shape-anchor--cube {
+        display: none;
+      }
+
+      .shape-anchor--sphere {
+        right: 4%;
+        bottom: 5%;
+        transform: scale(0.78);
+        opacity: 0.45;
+      }
+
+      .page-footer .hint {
+        display: none;
+      }
+
+      .aurora--indigo {
+        top: -30vw;
+        left: -30vw;
+        width: 80vw;
+        height: 80vw;
+      }
+
+      .aurora--pink {
+        display: none;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .card {
+        padding: 22px 18px 20px;
+      }
+
+      .row {
+        font-size: 13px;
       }
     }
 
@@ -338,78 +955,147 @@
       *,
       *::before,
       *::after {
-        transition: none !important;
-        animation: none !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+
+      .card,
+      .card-content,
+      .input-wrap {
+        transform: none !important;
       }
     }
   </style>
 </head>
 <body>
+  <div class="scene" aria-hidden="true">
+    <div class="grid-floor"></div>
+    <div class="aurora aurora--indigo"></div>
+    <div class="aurora aurora--cyan"></div>
+    <div class="aurora aurora--pink"></div>
+
+    <div class="shape-anchor shape-anchor--ring">
+      <div class="float">
+        <div class="ring"></div>
+      </div>
+    </div>
+
+    <div class="shape-anchor shape-anchor--cube">
+      <div class="float">
+        <div class="cube-stage">
+          <div class="cube">
+            <span class="cube__face cube__face--front"></span>
+            <span class="cube__face cube__face--back"></span>
+            <span class="cube__face cube__face--right"></span>
+            <span class="cube__face cube__face--left"></span>
+            <span class="cube__face cube__face--top"></span>
+            <span class="cube__face cube__face--bottom"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shape-anchor shape-anchor--sphere">
+      <div class="float">
+        <div class="orb"></div>
+      </div>
+    </div>
+
+    <div class="shape-anchor shape-anchor--coin">
+      <div class="float">
+        <div class="ring ring--small"></div>
+      </div>
+    </div>
+  </div>
+
   <main class="login-shell">
     <div class="brand">
       <span class="brand-mark" aria-hidden="true">S</span>
       <span class="brand-name">superagent-lab</span>
     </div>
 
-    <section class="card" aria-labelledby="login-title">
-      <h1 id="login-title">欢迎回来</h1>
-      <p class="subtitle">登录你的账号以继续使用 superagent-lab。</p>
+    <div class="stage">
+      <div class="card-float">
+        <section class="card" id="login-card" aria-labelledby="login-title">
+          <div class="card-shine" aria-hidden="true"></div>
+          <div class="card-content">
+            <h1 id="login-title">欢迎回来</h1>
+            <p class="subtitle">登录你的账号以继续使用 superagent-lab。</p>
 
-      <form id="login-form" method="post" action="#" novalidate>
-        <div class="field" id="username-field">
-          <label for="username">用户名或邮箱</label>
-          <div class="input-wrap">
-            <input
-              id="username"
-              name="username"
-              type="text"
-              placeholder="name@example.com"
-              autocomplete="username"
-              autocapitalize="none"
-              spellcheck="false"
-              aria-describedby="username-error"
-              required
-            >
+            <form id="login-form" method="post" action="#" novalidate>
+              <div class="field" id="username-field">
+                <label for="username">用户名或邮箱</label>
+                <div class="input-wrap">
+                  <span class="field-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="8" r="3.5"></circle>
+                      <path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6"></path>
+                    </svg>
+                  </span>
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="name@example.com"
+                    autocomplete="username"
+                    autocapitalize="none"
+                    spellcheck="false"
+                    aria-describedby="username-error"
+                    required
+                  >
+                </div>
+                <p class="error-message" id="username-error">请输入用户名或邮箱。</p>
+              </div>
+
+              <div class="field" id="password-field">
+                <label for="password">密码</label>
+                <div class="input-wrap has-toggle">
+                  <span class="field-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="4.5" y="10" width="15" height="10" rx="2.5"></rect>
+                      <path d="M8 10V7.5a4 4 0 0 1 8 0V10"></path>
+                    </svg>
+                  </span>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="请输入密码"
+                    autocomplete="current-password"
+                    aria-describedby="password-error"
+                    required
+                  >
+                  <button class="toggle-password" id="toggle-password" type="button" aria-pressed="false">
+                    显示
+                  </button>
+                </div>
+                <p class="error-message" id="password-error">请输入密码。</p>
+              </div>
+
+              <div class="row">
+                <label class="remember">
+                  <input id="remember" name="remember" type="checkbox">
+                  <span>记住我</span>
+                </label>
+                <a class="forgot" href="#" id="forgot-link">忘记密码？</a>
+              </div>
+
+              <button class="submit" id="submit-button" type="submit">登录</button>
+
+              <p class="status" id="status" role="status" aria-live="polite"></p>
+            </form>
+
+            <p class="card-footer">这是一个演示页面：表单不会连接后端，也不会发送任何凭据。</p>
           </div>
-          <p class="error-message" id="username-error">请输入用户名或邮箱。</p>
-        </div>
+        </section>
+      </div>
+    </div>
 
-        <div class="field" id="password-field">
-          <label for="password">密码</label>
-          <div class="input-wrap has-toggle">
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="请输入密码"
-              autocomplete="current-password"
-              aria-describedby="password-error"
-              required
-            >
-            <button class="toggle-password" id="toggle-password" type="button" aria-pressed="false">
-              显示
-            </button>
-          </div>
-          <p class="error-message" id="password-error">请输入密码。</p>
-        </div>
-
-        <div class="row">
-          <label class="remember">
-            <input id="remember" name="remember" type="checkbox">
-            <span>记住我</span>
-          </label>
-          <a class="forgot" href="#" id="forgot-link">忘记密码？</a>
-        </div>
-
-        <button class="submit" id="submit-button" type="submit">登录</button>
-
-        <p class="status" id="status" role="status" aria-live="polite"></p>
-      </form>
-
-      <p class="card-footer">这是一个演示页面：表单不会连接后端，也不会发送任何凭据。</p>
-    </section>
-
-    <p class="page-footer">superagent-lab · test/login.html</p>
+    <p class="page-footer">
+      superagent-lab · test/login.html
+      <span class="hint">· 移动鼠标体验 3D 视差</span>
+    </p>
   </main>
 
   <noscript>
@@ -418,6 +1104,10 @@
 
   <script>
     (function () {
+      'use strict';
+
+      var root = document.documentElement;
+      var card = document.getElementById('login-card');
       var form = document.getElementById('login-form');
       var usernameField = document.getElementById('username-field');
       var passwordField = document.getElementById('password-field');
@@ -428,6 +1118,118 @@
       var status = document.getElementById('status');
       var forgotLink = document.getElementById('forgot-link');
       var pendingTimer = null;
+
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+      var tilt = { targetX: 0, targetY: 0, currentX: 0, currentY: 0 };
+      var rafId = null;
+
+      function motionAllowed() {
+        return !reduceMotion.matches && finePointer.matches;
+      }
+
+      function setVar(element, name, value) {
+        element.style.setProperty(name, value);
+      }
+
+      function renderTilt() {
+        var dx = tilt.targetX - tilt.currentX;
+        var dy = tilt.targetY - tilt.currentY;
+        tilt.currentX += dx * 0.14;
+        tilt.currentY += dy * 0.14;
+
+        var settled = Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01;
+        var x = settled ? tilt.targetX : tilt.currentX;
+        var y = settled ? tilt.targetY : tilt.currentY;
+
+        card.style.transform = 'perspective(1000px) rotateX(' + x.toFixed(2) + 'deg) rotateY(' + y.toFixed(2) + 'deg)';
+
+        if (settled) {
+          rafId = null;
+        } else {
+          rafId = window.requestAnimationFrame(renderTilt);
+        }
+      }
+
+      function startTilt() {
+        if (!motionAllowed() || rafId !== null) {
+          return;
+        }
+        rafId = window.requestAnimationFrame(renderTilt);
+      }
+
+      function resetTilt() {
+        tilt.targetX = 0;
+        tilt.targetY = 0;
+        startTilt();
+      }
+
+      window.addEventListener('pointermove', function (event) {
+        if (!motionAllowed()) {
+          return;
+        }
+
+        var nx = event.clientX / window.innerWidth - 0.5;
+        var ny = event.clientY / window.innerHeight - 0.5;
+
+        setVar(root, '--px', (nx * 34).toFixed(2) + 'px');
+        setVar(root, '--py', (ny * 30).toFixed(2) + 'px');
+        setVar(root, '--brand-tilt-y', (nx * 18).toFixed(2) + 'deg');
+        setVar(root, '--brand-tilt-x', (-ny * 14).toFixed(2) + 'deg');
+      }, { passive: true });
+
+      card.addEventListener('pointermove', function (event) {
+        if (!motionAllowed()) {
+          return;
+        }
+
+        var rect = card.getBoundingClientRect();
+        var nx = (event.clientX - rect.left) / rect.width - 0.5;
+        var ny = (event.clientY - rect.top) / rect.height - 0.5;
+
+        tilt.targetY = nx * 18;
+        tilt.targetX = -ny * 15;
+
+        setVar(card, '--shine-x', ((nx + 0.5) * 100).toFixed(1) + '%');
+        setVar(card, '--shine-y', ((ny + 0.5) * 100).toFixed(1) + '%');
+        card.classList.add('is-hovered');
+        startTilt();
+      }, { passive: true });
+
+      card.addEventListener('pointerleave', function () {
+        card.classList.remove('is-hovered');
+        resetTilt();
+      });
+
+      submitButton.addEventListener('pointermove', function (event) {
+        if (!motionAllowed()) {
+          return;
+        }
+
+        var rect = submitButton.getBoundingClientRect();
+        var mx = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+        var my = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+        setVar(submitButton, '--btn-x', (mx * 4).toFixed(2) + 'px');
+        setVar(submitButton, '--btn-y', (my * 3).toFixed(2) + 'px');
+      }, { passive: true });
+
+      submitButton.addEventListener('pointerleave', function () {
+        setVar(submitButton, '--btn-x', '0px');
+        setVar(submitButton, '--btn-y', '0px');
+      });
+
+      reduceMotion.addEventListener('change', function () {
+        if (reduceMotion.matches) {
+          if (rafId !== null) {
+            window.cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+          tilt.currentX = 0;
+          tilt.currentY = 0;
+          card.style.transform = '';
+          card.classList.remove('is-hovered');
+        }
+      });
 
       function setFieldError(field, input, hasError) {
         field.classList.toggle('invalid', hasError);
