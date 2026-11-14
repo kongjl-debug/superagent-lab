@@ -1,5 +1,4 @@
 # superagent-lab
-superagent-lab
 
 ## Usage
 
