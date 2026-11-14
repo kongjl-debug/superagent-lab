@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="superagent-lab 演示登录页面">
+  <title>登录 | superagent-lab</title>
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236366f1'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='38' font-weight='700' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E"
+  >
+  <style>
+    :root {
+      --bg-start: #eef2ff;
+      --bg-end: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --field-bg: #f8fafc;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --danger: #dc2626;
+      --success: #15803d;
+      --ring: rgba(79, 70, 229, 0.28);
+      --shadow: 0 24px 60px -20px rgba(15, 23, 42, 0.25);
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-start: #111827;
+        --bg-end: #020617;
+        --card-bg: #0f172a;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: #334155;
+        --field-bg: #1e293b;
+        --primary: #818cf8;
+        --primary-hover: #a5b4fc;
+        --danger: #f87171;
+        --success: #4ade80;
+        --ring: rgba(129, 140, 248, 0.35);
+        --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+        color-scheme: dark;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at 15% 10%, var(--bg-start), var(--bg-end) 60%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .login-shell {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px -8px rgba(79, 70, 229, 0.55);
+      user-select: none;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 32px;
+    }
+
+    .card h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 0 0 26px;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--field-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .input-wrap input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    .input-wrap.has-toggle input {
+      padding-right: 76px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 8px;
+      padding: 6px 10px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .toggle-password:hover,
+    .toggle-password:focus-visible {
+      background: var(--ring);
+      outline: none;
+    }
+
+    .error-message {
+      display: none;
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--danger);
+    }
+
+    .field.invalid input {
+      border-color: var(--danger);
+    }
+
+    .field.invalid .error-message {
+      display: block;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 4px 0 24px;
+      font-size: 14px;
+    }
+
+    .remember {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .forgot {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .forgot:hover,
+    .forgot:focus-visible {
+      text-decoration: underline;
+    }
+
+    .submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px 16px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, #6366f1, #7c3aed);
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.12s ease, filter 0.15s ease;
+    }
+
+    .submit:hover {
+      filter: brightness(1.06);
+    }
+
+    .submit:active {
+      transform: translateY(1px);
+    }
+
+    .submit:focus-visible {
+      outline: 3px solid var(--ring);
+      outline-offset: 2px;
+    }
+
+    .submit[disabled] {
+      cursor: progress;
+      filter: saturate(0.7);
+      opacity: 0.8;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.55;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .card-footer {
+      margin: 22px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .page-footer {
+      margin-top: 20px;
+      font-size: 12px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .noscript-message {
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px;
+        align-items: flex-start;
+      }
+
+      .login-shell {
+        padding-top: 24px;
+      }
+
+      .card {
+        padding: 24px 20px;
+        border-radius: 16px;
+      }
+
+      .card h1 {
+        font-size: 23px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="login-shell">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <span class="brand-name">superagent-lab</span>
+    </div>
+
+    <section class="card" aria-labelledby="login-title">
+      <h1 id="login-title">欢迎回来</h1>
+      <p class="subtitle">登录你的账号以继续使用 superagent-lab。</p>
+
+      <form id="login-form" method="post" action="#" novalidate>
+        <div class="field" id="username-field">
+          <label for="username">用户名或邮箱</label>
+          <div class="input-wrap">
+            <input
+              id="username"
+              name="username"
+              type="text"
+              placeholder="name@example.com"
+              autocomplete="username"
+              autocapitalize="none"
+              spellcheck="false"
+              aria-describedby="username-error"
+              required
+            >
+          </div>
+          <p class="error-message" id="username-error">请输入用户名或邮箱。</p>
+        </div>
+
+        <div class="field" id="password-field">
+          <label for="password">密码</label>
+          <div class="input-wrap has-toggle">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="请输入密码"
+              autocomplete="current-password"
+              aria-describedby="password-error"
+              required
+            >
+            <button class="toggle-password" id="toggle-password" type="button" aria-pressed="false">
+              显示
+            </button>
+          </div>
+          <p class="error-message" id="password-error">请输入密码。</p>
+        </div>
+
+        <div class="row">
+          <label class="remember">
+            <input id="remember" name="remember" type="checkbox">
+            <span>记住我</span>
+          </label>
+          <a class="forgot" href="#" id="forgot-link">忘记密码？</a>
+        </div>
+
+        <button class="submit" id="submit-button" type="submit">登录</button>
+
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="card-footer">这是一个演示页面：表单不会连接后端，也不会发送任何凭据。</p>
+    </section>
+
+    <p class="page-footer">superagent-lab · test/login.html</p>
+  </main>
+
+  <noscript>
+    <p class="noscript-message">请启用 JavaScript 以使用登录表单。</p>
+  </noscript>
+
+  <script>
+    (function () {
+      var form = document.getElementById('login-form');
+      var usernameField = document.getElementById('username-field');
+      var passwordField = document.getElementById('password-field');
+      var usernameInput = document.getElementById('username');
+      var passwordInput = document.getElementById('password');
+      var toggleButton = document.getElementById('toggle-password');
+      var submitButton = document.getElementById('submit-button');
+      var status = document.getElementById('status');
+      var forgotLink = document.getElementById('forgot-link');
+      var pendingTimer = null;
+
+      function setFieldError(field, input, hasError) {
+        field.classList.toggle('invalid', hasError);
+        input.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+      }
+
+      function showStatus(message, kind) {
+        status.textContent = message;
+        status.className = 'status' + (kind ? ' ' + kind : '');
+      }
+
+      function validate() {
+        var username = usernameInput.value.trim();
+        var password = passwordInput.value;
+        var usernameError = username.length === 0;
+        var passwordError = password.length === 0;
+
+        setFieldError(usernameField, usernameInput, usernameError);
+        setFieldError(passwordField, passwordInput, passwordError);
+
+        if (usernameError) {
+          usernameInput.focus();
+        } else if (passwordError) {
+          passwordInput.focus();
+        }
+
+        return !usernameError && !passwordError;
+      }
+
+      usernameInput.addEventListener('input', function () {
+        if (usernameInput.value.trim().length > 0) {
+          setFieldError(usernameField, usernameInput, false);
+        }
+      });
+
+      passwordInput.addEventListener('input', function () {
+        if (passwordInput.value.length > 0) {
+          setFieldError(passwordField, passwordInput, false);
+        }
+      });
+
+      toggleButton.addEventListener('click', function () {
+        var reveal = passwordInput.type === 'password';
+        passwordInput.type = reveal ? 'text' : 'password';
+        toggleButton.textContent = reveal ? '隐藏' : '显示';
+        toggleButton.setAttribute('aria-pressed', reveal ? 'true' : 'false');
+        passwordInput.focus();
+      });
+
+      forgotLink.addEventListener('click', function (event) {
+        event.preventDefault();
+        showStatus('演示页面暂未提供密码找回功能。');
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        showStatus('');
+
+        if (!validate()) {
+          return;
+        }
+
+        if (pendingTimer) {
+          return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = '登录中…';
+        showStatus('正在登录…');
+
+        pendingTimer = window.setTimeout(function () {
+          pendingTimer = null;
+          submitButton.disabled = false;
+          submitButton.textContent = '登录';
+          showStatus('登录功能为演示，未连接后端。', 'success');
+        }, 900);
+      });
+    })();
+  </script>
+</body>
+</html>
